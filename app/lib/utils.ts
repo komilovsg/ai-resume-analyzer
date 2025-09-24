@@ -1,4 +1,15 @@
-export function formatSize(bytes: number, options?: { maximumFractionDigits?: number }): string {
+import type { ClassValue } from "clsx";
+import clsx from "clsx";
+import { twMerge } from "tailwind-merge";
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}
+
+export function formatSize(
+  bytes: number,
+  options?: { maximumFractionDigits?: number }
+): string {
   if (!Number.isFinite(bytes) || bytes <= 0) return "0 B";
 
   const units = ["B", "KB", "MB", "GB", "TB", "PB"] as const;
@@ -18,7 +29,6 @@ export function formatSize(bytes: number, options?: { maximumFractionDigits?: nu
   return `${formatter.format(value)} ${units[unitIndex]}`;
 }
 
-
 export const generateUUID = () => {
   return crypto.randomUUID();
-}
+};
