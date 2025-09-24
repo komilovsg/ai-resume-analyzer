@@ -1,4 +1,4 @@
-import { prepareInstructions } from "constants";
+import { prepareInstructions } from "../../constants";
 import { useState, type FormEvent } from "react";
 import { useNavigate } from "react-router";
 import FileUploader from "~/components/FileUploader";
@@ -56,7 +56,14 @@ export default function Upload() {
 
         const feedbackText = feedback.message.content === 'string' 
             ? feedback.message.content 
-            : feedback.message.content[0];
+            : feedback.message.content[0].text;
+
+
+        data.feedback = JSON.parse(feedbackText);
+        await kv.set(`resume:${uuid}`, JSON.stringify(data));
+        setStatusText("Analyzes complete, redirecting...");
+        console.log(data);
+        
         
     }
 
