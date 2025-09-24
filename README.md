@@ -1,87 +1,95 @@
-# Welcome to React Router!
+# Resumind — AI‑помощник для анализа резюме
 
-A modern, production-ready template for building full-stack React applications using React Router.
+Инструмент для загрузки резюме, конвертации в изображение и получения детального AI‑отзыва с оценками ATS и советами по улучшению. Проект поддерживает мультиязычность (EN/RU/TJ) и развёрнут на Puter.
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/remix-run/react-router-templates/tree/main/default)
+Онлайн-версия: `https://puter.com/app/jsm-ai-resume-analyzing-level-up`
 
-## Features
+## Технологии
+- React 19 + React Router 7 (SSR)
+- TypeScript
+- Tailwind CSS
+- i18next (мультиязычность EN/RU/TJ)(еще не работает)
+- Zustand (хранилище для Puter)
+- Puter.js для хранения файлов, KV и AI‑аналитики
 
-- 🚀 Server-side rendering
-- ⚡️ Hot Module Replacement (HMR)
-- 📦 Asset bundling and optimization
-- 🔄 Data loading and mutations
-- 🔒 TypeScript by default
-- 🎉 TailwindCSS for styling
-- 📖 [React Router docs](https://reactrouter.com/)
+## Сценарий работы
+1. Пользователь загружает PDF‑резюме
+2. Приложение конвертирует PDF в изображение
+3. Отправляем запрос к AI с локализованной инструкцией
+4. Сохраняем результат (KV) и показываем карточку резюме с оценками
 
-## Getting Started
-
-### Installation
-
-Install the dependencies:
-
+## Быстрый старт
 ```bash
 npm install
-```
-
-### Development
-
-Start the development server with HMR:
-
-```bash
 npm run dev
+# http://localhost:5173
 ```
 
-Your application will be available at `http://localhost:5173`.
-
-## Building for Production
-
-Create a production build:
-
+Сборка:
 ```bash
 npm run build
 ```
 
-## Deployment
-
-### Docker Deployment
-
-To build and run using Docker:
-
+Запуск собранного приложения:
 ```bash
-docker build -t my-app .
-
-# Run the container
-docker run -p 3000:3000 my-app
+npm run start
 ```
 
-The containerized application can be deployed to any platform that supports Docker, including:
+## Скрипты
+- `dev` — локальная разработка (HMR)
+- `build` — продакшн‑сборка
+- `start` — запуск собранного сервера
+- `typecheck` — генерация типов роутера и проверка TS
 
-- AWS ECS
-- Google Cloud Run
-- Azure Container Apps
-- Digital Ocean App Platform
-- Fly.io
-- Railway
-
-### DIY Deployment
-
-If you're familiar with deploying Node applications, the built-in app server is production-ready.
-
-Make sure to deploy the output of `npm run build`
-
-```
-├── package.json
-├── package-lock.json (or pnpm-lock.yaml, or bun.lockb)
-├── build/
-│   ├── client/    # Static assets
-│   └── server/    # Server-side code
+## Локализация (i18n)
+- Файлы переводов: `app/locales/en.json`, `app/locales/ru.json`, `app/locales/tj.json`
+- Инициализация: `app/lib/i18n.ts`
+- Переключатель языка: `app/components/Navbar.tsx`
+- Использование в компонентах:
+```tsx
+import { t } from "../lib/i18n";
+<h1>{t("home.title")}</h1>
 ```
 
-## Styling
+## Интеграция с Puter
+Проект использует возможности Puter для хранения файлов, ключ‑значение (KV) и AI‑аналитики. Приложение развёрнуто и доступно по адресу: `https://puter.com/app/jsm-ai-resume-analyzing-level-up`
 
-This template comes with [Tailwind CSS](https://tailwindcss.com/) already configured for a simple default starting experience. You can use whatever CSS framework you prefer.
+Работа с Puter дала отличный опыт в интеграции облачного хранилища, сервиса AI и простого KV в одном SDK.
 
----
+## Структура проекта (основное)
+```
+app/
+  components/
+    Navbar.tsx            # шапка + переключатель языка
+    FileUploader.tsx      # загрузка файла резюме
+  lib/
+    i18n.ts               # инициализация i18next
+    pdf2img.ts            # конвертация PDF -> изображение
+    puter.ts              # интеграция с Puter (fs/ai/kv)
+    utils.ts              # утилиты
+  locales/
+    en.json
+    ru.json
+    tj.json
+  routes/
+    home.tsx              # список резюме
+    upload.tsx            # загрузка и анализ
+    resume.tsx            # страница с результатом
+constants/
+  index.ts                # prepareInstructions + формат ответа AI
+```
 
-Built with ❤️ using React Router.
+## Переменные окружения
+В зависимости от вашей конфигурации Puter/AI могут потребоваться токены/ключи. Добавьте их в `.env` и считывайте в соответствующих модулях (см. `app/lib/puter.ts`).
+
+## Тестирование локализации
+1. Откройте сайт локально или по ссылке на Puter
+2. В `Navbar` переключите EN/RU/TJ
+3. Проверьте заголовки/подписи/статусы на страницах `Home` и `Upload`
+
+## Решение проблем
+- Ошибка AI 400 (Permission denied / usage-limited-chat): ограничение со стороны AI‑делегата. Мы отображаем понятное сообщение и останавливаем загрузку. Проверьте лимиты/ключи в Puter.
+- Большой GIF на `Upload`: отцентрирован и ограничен по ширине Tailwind‑классами, при необходимости сузьте `max-w-*`.
+
+## Лицензия
+MIT
